@@ -1,6 +1,5 @@
 import "./MainPage.scss";
 import axios from "axios";
-import Response from "../components/components";
 import { useState } from "react";
 
 function MainPage() {
@@ -37,12 +36,11 @@ function MainPage() {
       messages: [
         {
           role: "user",
-          content: `Based on this job role ${interestedRole} and description: ${interestedRoleRequirements}. Refine my CV for the role. Optimize for ATS systems. My Profile Bio in my CV is: ${bio} My profile bio contains a basic overview of what i've done in my career and what I'm looking to do. My Skills section in my CV is: ${skills}This section highlights the names of skills I'm proficient at. My Certifications section in my CV is: ${certifications}. My job experience section has the following jobs: ${currentRoleDescription} and  ${previousRoleDescription}
-                    These are separated jobs i've had in the past. They contain information about what I did and what I accomplished. My Education Section is: ${education}. These are the schools I went to and the diplomas I  received. At the end of the response, summarize what was changed and why. explain in a separate section how this resume was ATS (Applicant Tracking System) optimized.  In a separate line, provide additional tips for securing this job.`,
+          content: `Based on this job role im trying to get hired for  ${interestedRole} and its description: ${interestedRoleRequirements}. Extract the keywords from it and naturally add them to my CV for this role. Include the keywords with context and Optimize for Applicant Tracking systems, whilst avoiding repetition. My Profile Bio in my CV is: ${bio} My profile bio contains a basic overview of what i've done in my career and what I'm looking to do. My Skills section in my CV is: ${skills}This section highlights the names of skills I'm proficient at. My Certifications section in my CV is: ${certifications}. My job experience section has the following jobs: ${currentRoleDescription} as my current job and  ${previousRoleDescription} as my previous job. They contain information about what I did and what I accomplished. My Education Section is: ${education}. These are the schools I went to and the diplomas I  received. Please respond like this, for each  section show section name: and your rewrite of the section based on the job description provided. then in changes: sumarize  what you changed in the context of the job posting we shared.  Do that for each section. do not respond with any additional chatter or information. in the response wrap each section with  <p> and end with</p>. for each of the summary of changes changes wrap it in <p> and end with </p>`,
         },
       ],
-      temperature: 1,
-      top_p: 1,
+      temperature: 0.5,
+      top_p: 0.9,
       n: 1,
       stream: false,
       max_tokens: 10000,
@@ -55,13 +53,19 @@ function MainPage() {
         headers: headers,
       });
       setResult(response.data.choices[0].message.content.trim());
+      console.log(result);
     } catch (error) {
       console.error("Error calling OpenAI API", error);
       setResult("There was an error processing your request.");
     } finally {
       setLoading(false);
+
+      
     }
   };
+
+
+  
 
   return (
     <>
@@ -171,7 +175,8 @@ function MainPage() {
             <button type="submit"> Submit </button>
           </form>
           <h2> Result</h2>
-          <p>{result} </p>
+          <div dangerouslySetInnerHTML={{__html:result}}/>
+          
         </>
       )}
     </>
