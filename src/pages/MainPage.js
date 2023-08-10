@@ -1,4 +1,5 @@
 import "./MainPage.scss";
+import axios from "axios";
 
 function MainPage() {
   return (
