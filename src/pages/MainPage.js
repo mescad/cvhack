@@ -1,71 +1,73 @@
 import "./MainPage.scss";
 import axios from "axios";
 import { useState } from "react";
+// import { PDFDocument } from "pdfjs-dist";
+// import pdf from "pdfjs-dist";
+import * as pdfjsLib from "pdfjs-dist/webpack";
 
 function MainPage() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const openaiEndpoint = "https://api.openai.com/v1/chat/completions";
-  const headers = {
-    Authorization: "Bearer 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",
-    "Content-Type": "application/json",
-  };
+  //file uploading from field and parsing
 
-  const handleSubmit = async (event) => {
+  const [pdfContent, setPdfContent] = useState("");
+
+
+  const handleFileChange = async (event) => {
     event.preventDefault();
-    setLoading(true);
 
-    //const currentRole = event.target["currentRole"].value;
-    const currentRoleDescription = event.target["currentRoleDescription"].value;
-    //const previousRole = event.target["previousRole"].value;
-    const previousRoleDescription =
-      event.target["previousRoleDescription"].value;
-    const education = event.target["education"].value;
-    const skills = event.target["skills"].value;
-    const bio = event.target["bio"].value;
-    const certifications = event.target["certifications"].value;
+    console.log(event.target.files[0]);
+    const file = event.target.files[0];
 
-    const interestedRole = event.target["interestedRole"].value;
-    const interestedRoleRequirements =
-      event.target["interestedRoleRequirements"].value;
+    
 
-    // Construct the payload for API
-    const payload = {
-      model: "gpt-3.5-turbo-16k",
-      messages: [
-        {
-          role: "user",
-          content: `Based on this job role im trying to get hired for  ${interestedRole} and its description: ${interestedRoleRequirements}. Extract the keywords from it and naturally add them to my CV for this role. Include the keywords with context and Optimize for Applicant Tracking systems, whilst avoiding repetition. My Profile Bio in my CV is: ${bio} My profile bio contains a basic overview of what i've done in my career and what I'm looking to do. My Skills section in my CV is: ${skills}This section highlights the names of skills I'm proficient at. My Certifications section in my CV is: ${certifications}. My job experience section has the following jobs: ${currentRoleDescription} as my current job and  ${previousRoleDescription} as my previous job. They contain information about what I did and what I accomplished. My Education Section is: ${education}. These are the schools I went to and the diplomas I  received. Please respond like this, for each  section show section name: and your rewrite of the section based on the job description provided. then in changes: sumarize  what you changed in the context of the job posting we shared.  Do that for each section. do not respond with any additional chatter or information. in the response wrap each section with  <p> and end with</p>. for each of the summary of changes changes wrap it in <p> and end with </p>`,
-        },
-      ],
-      temperature: 0.5,
-      top_p: 0.9,
-      n: 1,
-      stream: false,
-      max_tokens: 10000,
-      presence_penalty: 0,
-      frequency_penalty: 0,
-    };
+    if (file) {
+      const reader = new FileReader();
 
-    try {
-      const response = await axios.post(openaiEndpoint, payload, {
-        headers: headers,
-      });
-      setResult(response.data.choices[0].message.content.trim());
-      console.log(result);
-    } catch (error) {
-      console.error("Error calling OpenAI API", error);
-      setResult("There was an error processing your request.");
-    } finally {
-      setLoading(false);
+      console.log(pdfjsLib);
 
-      
+      reader.onload = async (e) => {
+        const contents = e.target.result;
+        const pdf = await pdfjsLib.getDocument(contents).promise;
+        console.log(pdf);
+
+        const data= await pdf.getData()
+        console.log(data);
+
+        // console.log(new TextDecoder("utf-8").decode(data));
+
+        // console.log(String.fromCharCode.apply(null, data));
+
+        const page = await pdf.getPage(1);
+        console.log(page);
+
+        const textContent = await page.getTextContent();
+
+        console.log(textContent.items);
+
+         let extractedText = "";
+         const pageText = textContent.items.map((item) => item.str).join(" ");
+         extractedText += pageText;
+         console.log(extractedText);
+
+        // for (const page of pages) {
+        //   const textContent = await page.getTextContent();
+        //   const pageText = textContent.items.map((item) => item.str).join(" ");
+        //   extractedText += pageText;
+        // }
+
+
+        setPdfContent(extractedText);
+      };
+
+      reader.onerror = (error) => {
+        console.error("Error reading file:", error);
+      };
+
+      reader.readAsArrayBuffer(file);
     }
   };
-
-
-  
 
   return (
     <>
@@ -75,92 +77,20 @@ function MainPage() {
         <div>Loading...</div>
       ) : (
         <>
-          <form className="form__current" onSubmit={handleSubmit}>
+          <div className="file__upload">
+            <form>
+              <h2> Upload your CV in here</h2>
+              <input onChange={handleFileChange} name="file" type="file" />
+              <button> Upload</button>
+            </form>
+          </div>
+
+          <form className="form__current">
             <h2> Add your job information</h2>
 
-            <h3> Current Job</h3>
-            <label className="inputcom__label">Add your current role </label>
-            <input
-              name="currentRole"
-              className="inputcom__input"
-              type="text"
-              placeholder="Add your current job role"
-            />
-
-            <label className="inputcom__label">
-              Add your current role description{" "}
-            </label>
-            <textarea
-              name="currentRoleDescription"
-              className="inputcom__area"
-              type="text"
-              placeholder="Add your current job description"
-            />
-
-            <h3> Previous job </h3>
-            <label className="inputcom__label">Add your previous role </label>
-            <input
-              name="previousRole"
-              className="inputcom__input"
-              type="text"
-              placeholder="Add your previous job role"
-            />
-
-            <label className="inputcom__label">
-              Add your previous role description{" "}
-            </label>
-            <textarea
-              name="previousRoleDescription"
-              className="inputcom__area"
-              type="text"
-              placeholder="Add your current job description"
-            />
-
-            <h3> Education</h3>
-            <label className="inputcom__label">
-              Add your eductation degree name{" "}
-            </label>
-            <input
-              name="education"
-              className="inputcom__input"
-              type="text"
-              placeholder="Add your degree"
-            />
-
-            <h3> Skills and Certifications</h3>
-            <label className="inputcom__label">Add your skills </label>
-            <textarea
-              name="skills"
-              className="inputcom__area"
-              type="text"
-              placeholder="Add your skills"
-            />
-
-            <label className="inputcom__label">Add your certifications </label>
-            <textarea
-              name="certifications"
-              className="inputcom__area"
-              type="text"
-              placeholder="Add your certifications"
-            />
-
-            <h3> Bio</h3>
-            <label className="inputcom__label">Add your bio </label>
-            <textarea
-              name="bio"
-              className="inputcom__area"
-              type="text"
-              placeholder="Add your bio"
-            />
-
-            <h2> Add your interested job information</h2>
-            <label className="inputcom__label">Add your interested role </label>
-            <input
-              name="interestedRole"
-              className="inputcom__input"
-              type="text"
-              placeholder="Add your interested job role"
-            />
+            <div>
+              <h2> {pdfContent}</h2>
+            </div>
 
             <label className="inputcom__label">
               Add your interested role requirements{" "}
@@ -175,8 +105,7 @@ function MainPage() {
             <button type="submit"> Submit </button>
           </form>
           <h2> Result</h2>
-          <div dangerouslySetInnerHTML={{__html:result}}/>
-          
+          <div dangerouslySetInnerHTML={{ __html: result }} />
         </>
       )}
     </>
