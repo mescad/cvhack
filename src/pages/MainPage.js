@@ -51,6 +51,10 @@ function MainPage() {
   const handleInputInfo= async (e)=>{
    e.preventDefault()
 
+   const jobDescription = e.target["RoleRequirements"].value;
+   setJobContent(jobDescription)
+
+   console.log(jobContent)
    
   }
 
@@ -81,7 +85,7 @@ function MainPage() {
               Add your interested role requirements{" "}
             </label>
             <textarea
-              name="interestedRoleRequirements"
+              name="RoleRequirements"
               className="inputcom__area"
               type="text"
               placeholder="Add your interested role description"
