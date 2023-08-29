@@ -1,8 +1,6 @@
 import "./MainPage.scss";
 import axios from "axios";
 import { useState } from "react";
-// import { PDFDocument } from "pdfjs-dist";
-// import pdf from "pdfjs-dist";
 import * as pdfjsLib from "pdfjs-dist/webpack";
 
 function MainPage() {
@@ -12,15 +10,13 @@ function MainPage() {
   //file uploading from field and parsing
 
   const [pdfContent, setPdfContent] = useState("");
-
+  const [jobContent, setJobContent]= useState(null)
 
   const handleFileChange = async (event) => {
     event.preventDefault();
 
     console.log(event.target.files[0]);
     const file = event.target.files[0];
-
-    
 
     if (file) {
       const reader = new FileReader();
@@ -30,34 +26,16 @@ function MainPage() {
       reader.onload = async (e) => {
         const contents = e.target.result;
         const pdf = await pdfjsLib.getDocument(contents).promise;
-        console.log(pdf);
 
-        const data= await pdf.getData()
-        console.log(data);
+        let extractedText = "";
 
-        // console.log(new TextDecoder("utf-8").decode(data));
-
-        // console.log(String.fromCharCode.apply(null, data));
-
-        const page = await pdf.getPage(1);
-        console.log(page);
-
-        const textContent = await page.getTextContent();
-
-        console.log(textContent.items);
-
-         let extractedText = "";
-         const pageText = textContent.items.map((item) => item.str).join(" ");
-         extractedText += pageText;
-         console.log(extractedText);
-
-        // for (const page of pages) {
-        //   const textContent = await page.getTextContent();
-        //   const pageText = textContent.items.map((item) => item.str).join(" ");
-        //   extractedText += pageText;
-        // }
-
-
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          const pageText = textContent.items.map((item) => item.str).join(" ");
+          extractedText += pageText + "\n\n";
+          console.log(extractedText);
+        }
         setPdfContent(extractedText);
       };
 
@@ -68,6 +46,13 @@ function MainPage() {
       reader.readAsArrayBuffer(file);
     }
   };
+
+
+  const handleInputInfo= async (e)=>{
+   e.preventDefault()
+
+   
+  }
 
   return (
     <>
@@ -102,7 +87,7 @@ function MainPage() {
               placeholder="Add your interested role description"
             />
 
-            <button type="submit"> Submit </button>
+            <button onClick={handleInputInfo} type="submit"> Submit </button>
           </form>
           <h2> Result</h2>
           <div dangerouslySetInnerHTML={{ __html: result }} />
