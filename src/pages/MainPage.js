@@ -3,6 +3,9 @@ import axios from "axios";
 import { useState } from "react";
 import * as pdfjsLib from "pdfjs-dist/webpack";
 
+const PORT = process.env.REACT_APP_PORT || 8080;
+const DOMAIN = process.env.REACT_APP_API_DOMAIN || "http://localhost";
+
 function MainPage() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -10,7 +13,8 @@ function MainPage() {
   //file uploading from field and parsing
 
   const [pdfContent, setPdfContent] = useState("");
-  const [jobContent, setJobContent]= useState(null)
+  const [jobContent, setJobContent] = useState("");
+  const [responseData, setResponseData] = useState(null);
 
   const handleFileChange = async (event) => {
     event.preventDefault();
@@ -47,16 +51,27 @@ function MainPage() {
     }
   };
 
+  const handleInputInfo = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-  const handleInputInfo= async (e)=>{
-   e.preventDefault()
+    const jobDescription = e.target["RoleRequirements"].value;
+    setJobContent(jobDescription);
 
-   const jobDescription = e.target["RoleRequirements"].value;
-   setJobContent(jobDescription)
+    console.log(jobDescription);
+    console.log(`${DOMAIN}:${PORT}`);
 
-   console.log(jobContent)
-   
-  }
+    axios
+      .post(`${DOMAIN}:${PORT}/api`, { jobDescription, pdfContent })
+      .then((res) => {
+        setResponseData(res.data.reformatedCV);
+        setLoading(false);
+      });
+  };
+
+  const handleDeleteDoc = () => {
+    setPdfContent("");
+  };
 
   return (
     <>
@@ -64,22 +79,28 @@ function MainPage() {
 
       {loading ? (
         <div>Loading...</div>
+      ) : responseData ? (
+        <>
+          <h2> Result</h2>
+          <div dangerouslySetInnerHTML={{ __html: responseData }} />
+          <button onCLick={() => setResponseData(null)}> Go back</button>
+        </>
       ) : (
         <>
           <div className="file__upload">
             <form>
               <h2> Upload your CV in here</h2>
               <input onChange={handleFileChange} name="file" type="file" />
-              <button> Upload</button>
+              <button onClick={handleDeleteDoc}> X</button>
             </form>
           </div>
 
-          <form className="form__current">
+          <form className="form__current" onSubmit={handleInputInfo}>
             <h2> Add your job information</h2>
 
-            <div>
+            {/* <div>
               <h2> {pdfContent}</h2>
-            </div>
+            </div> */}
 
             <label className="inputcom__label">
               Add your interested role requirements{" "}
@@ -91,10 +112,8 @@ function MainPage() {
               placeholder="Add your interested role description"
             />
 
-            <button onClick={handleInputInfo} type="submit"> Submit </button>
+            <button type="submit"> Submit </button>
           </form>
-          <h2> Result</h2>
-          <div dangerouslySetInnerHTML={{ __html: result }} />
         </>
       )}
     </>
