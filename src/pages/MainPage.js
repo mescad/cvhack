@@ -56,15 +56,22 @@ function MainPage() {
     setLoading(true);
 
     const jobDescription = e.target["RoleRequirements"].value;
+    // const skillRequiremetns = e.target["SkillsRequiremetns"].value;
+    // const qualificationsRequirements =
+    //   e.target["QualificationsRequirements"].value;
     setJobContent(jobDescription);
 
     console.log(jobDescription);
     console.log(`${DOMAIN}:${PORT}`);
 
     axios
-      .post(`${DOMAIN}:${PORT}/api`, { jobDescription, pdfContent })
+      .post(`${DOMAIN}:${PORT}/api`, {
+        jobDescription,
+        pdfContent,
+        
+      })
       .then((res) => {
-        setResponseData(res.data.reformatedCV);
+        setResponseData(res.data.finalResponse);
         setLoading(false);
       });
   };
@@ -83,7 +90,7 @@ function MainPage() {
         <>
           <h2> Result</h2>
           <div dangerouslySetInnerHTML={{ __html: responseData }} />
-          <button onCLick={() => setResponseData(null)}> Go back</button>
+          <button onClick={() => setResponseData(null)}> Go back</button>
         </>
       ) : (
         <>
@@ -103,7 +110,7 @@ function MainPage() {
             </div> */}
 
             <label className="inputcom__label">
-              Add your interested role requirements{" "}
+              Add your interested role requirements, for example role responsibilities, minimum qualifications, skills etc{" "}
             </label>
             <textarea
               name="RoleRequirements"
@@ -111,6 +118,7 @@ function MainPage() {
               type="text"
               placeholder="Add your interested role description"
             />
+
 
             <button type="submit"> Submit </button>
           </form>
