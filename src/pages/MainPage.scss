@@ -1,10 +1,112 @@
-.form__current{
+@use "../styles/partials/mixins" as *;
+@use "../styles/partials/variables" as *;
+
+.mainpage__wrapper{
+    padding: 0rem 1.6rem;
+    max-width: 102rem;
+    margin: auto;
+}
+
+
+
+.input__top{
+    padding: 1.6rem 1.6rem;
+
+
+    &--tips{
+        padding: 1.6rem;
+        border: 0.1rem solid black;
+        border-radius: 1rem;
+        text-align: start;
+        background-color: gainsboro;
+    }
+
+    &--file{
+     
+     padding: 1.6rem 0rem;
+     
+    }
+    
+}
+
+.input__bottom{
+    padding: 1.6rem 1.6rem;
+    
+
+
+
+
+    &--wrapper{
+        display: flex;
+        flex-direction: column;
+        border: 0.1rem solid black;
+        padding: 1.6rem 1.6rem;
+        border-radius: 1rem;
+        background-color: gainsboro;
+        width: 100%;
+    }
+
+&--jobdescription{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    width: 100%;
     
 }
+
+
+    &--tips{
+        padding: 1.6rem 1.6rem;
+        font-size: 1.3rem;
+        border: 0.1rem solid black;
+        border-radius: 1rem;
+        text-align: start;
+        background-color: white;
+    }
+
+
+    &--job{
+        display: flex;
+        flex-direction: column;
+        padding-top: 1.6rem;
+        
+    }
+
+    &--label{
+        padding-top: 1.6rem;
+        padding-bottom: 1.6rem;
+        font-size: 1.3rem;
+    }
+
+    &--area{
+        
+        height: 30rem;
+        border-radius: 1rem;
+        padding-bottom: 1.6rem;
+        font-family: 'TitilliumWeb', 'Arial Narrow', Arial, sans-serif;
+    }
+}
+
+.input__filemanage{
+    display: flex;
+    justify-content: center;
+}
+.input__wildmode{
+    padding: 1.6rem 1.6rem;
+}
+
+.input__submit{
+    width: 15rem;
+    height: 5rem;
+    border: 0.1rem solid black;
+    border-radius: 1rem;
+    &:hover{
+        background-color: black;
+        color: white;
+    }
+}
+
 
 .form__interested{
     display: flex;
@@ -14,12 +116,99 @@
 
 
 
-.inputcom__area{
-    width: 50%;
-    height: 50px;
+
+
+
+.tipsicon{
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
-.inputcom__input{
-    width: 30%;
-    height: 20px;
+.input__tipgroup{
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
 }
+
+
+.deleteicon{
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.button__group{
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 4rem;
+}
+
+.button__startover{
+    width: 15rem;
+    height: 5rem;
+    background-color: lightcoral;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 1rem;
+}
+
+.button__refine{
+    width: 15rem;
+    height: 5rem;
+    background-color:lightgreen;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 1rem;
+}
+
+.redoicon{
+    width: 3rem;
+    height: 3rem;
+}
+
+
+.refineicon{
+    width: 3rem;
+    height: 3rem;
+}
+
+
+.refine__section{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1.6rem 1.6rem;
+}
+
+.button__startrefine{
+    width: 15rem;
+    height: 5rem;
+    background-color:lightgreen;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 1rem;
+    margin: auto;
+}
+
+.refine__group{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1rem 0rem;
+}
+
+
+.response__section {
+    p:last-child {
+      border: 0.1rem solid black;
+      background-color: gainsboro;
+      
+      border-radius: 0.5rem;
+      
+    }
+  }

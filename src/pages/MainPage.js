@@ -1,184 +1,298 @@
 import "./MainPage.scss";
 import axios from "axios";
 import { useState } from "react";
+import * as pdfjsLib from "pdfjs-dist/webpack";
+import ReactSwitch from "react-switch";
+import Loading from "../components/Loading/Loading";
+import Navbar from "../components/Navbar/Navbar";
+import Footer from "../components/Footer/Footer";
+import tipsicon from "../assets/icons/tips-removebg-preview.png";
+import deleteicon from "../assets/icons/cross-24-512.webp";
+import refineicon from "../assets/icons/magic-wand_1538.png";
+import redoicon from "../assets/icons/redo.png";
+
+const PORT = process.env.REACT_APP_PORT || 8080;
+const DOMAIN = process.env.REACT_APP_API_DOMAIN || "http://localhost";
 
 function MainPage() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [toggle, setToggle] = useState(false);
 
-  const openaiEndpoint = "https://api.openai.com/v1/chat/completions";
-  const headers = {
-    Authorization: "Bearer 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",
-    "Content-Type": "application/json",
-  };
+  //file uploading from field and parsing
 
-  const handleSubmit = async (event) => {
+  const [pdfContent, setPdfContent] = useState("");
+  const [jobContent, setJobContent] = useState("");
+  const [responseData, setResponseData] = useState(null);
+  const [reformatedCV, setReformatedCV] = useState(null);
+  const [jobKeywords, setJobKeywords] = useState(null);
+  const [showRefine, setRefine] = useState(false);
+
+  console.log(toggle);
+
+  const handleFileChange = async (event) => {
     event.preventDefault();
-    setLoading(true);
 
-    //const currentRole = event.target["currentRole"].value;
-    const currentRoleDescription = event.target["currentRoleDescription"].value;
-    //const previousRole = event.target["previousRole"].value;
-    const previousRoleDescription =
-      event.target["previousRoleDescription"].value;
-    const education = event.target["education"].value;
-    const skills = event.target["skills"].value;
-    const bio = event.target["bio"].value;
-    const certifications = event.target["certifications"].value;
+    console.log(event.target.files[0]);
+    const file = event.target.files[0];
 
-    const interestedRole = event.target["interestedRole"].value;
-    const interestedRoleRequirements =
-      event.target["interestedRoleRequirements"].value;
+    if (file) {
+      const reader = new FileReader();
 
-    // Construct the payload for API
-    const payload = {
-      model: "gpt-3.5-turbo-16k",
-      messages: [
-        {
-          role: "user",
-          content: `Based on this job role im trying to get hired for  ${interestedRole} and its description: ${interestedRoleRequirements}. Extract the keywords from it and naturally add them to my CV for this role. Include the keywords with context and Optimize for Applicant Tracking systems, whilst avoiding repetition. My Profile Bio in my CV is: ${bio} My profile bio contains a basic overview of what i've done in my career and what I'm looking to do. My Skills section in my CV is: ${skills}This section highlights the names of skills I'm proficient at. My Certifications section in my CV is: ${certifications}. My job experience section has the following jobs: ${currentRoleDescription} as my current job and  ${previousRoleDescription} as my previous job. They contain information about what I did and what I accomplished. My Education Section is: ${education}. These are the schools I went to and the diplomas I  received. Please respond like this, for each  section show section name: and your rewrite of the section based on the job description provided. then in changes: sumarize  what you changed in the context of the job posting we shared.  Do that for each section. do not respond with any additional chatter or information. in the response wrap each section with  <p> and end with</p>. for each of the summary of changes changes wrap it in <p> and end with </p>`,
-        },
-      ],
-      temperature: 0.5,
-      top_p: 0.9,
-      n: 1,
-      stream: false,
-      max_tokens: 10000,
-      presence_penalty: 0,
-      frequency_penalty: 0,
-    };
+      console.log(pdfjsLib);
 
-    try {
-      const response = await axios.post(openaiEndpoint, payload, {
-        headers: headers,
-      });
-      setResult(response.data.choices[0].message.content.trim());
-      console.log(result);
-    } catch (error) {
-      console.error("Error calling OpenAI API", error);
-      setResult("There was an error processing your request.");
-    } finally {
-      setLoading(false);
+      reader.onload = async (e) => {
+        const contents = e.target.result;
+        const pdf = await pdfjsLib.getDocument(contents).promise;
 
-      
+        let extractedText = "";
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          const pageText = textContent.items.map((item) => item.str).join(" ");
+          extractedText += pageText + "\n\n";
+          console.log(extractedText);
+        }
+        setPdfContent(extractedText);
+      };
+
+      reader.onerror = (error) => {
+        console.error("Error reading file:", error);
+      };
+
+      reader.readAsArrayBuffer(file);
     }
   };
 
+  const handleInputInfo = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-  
+    const jobDescription = e.target["RoleRequirements"].value;
+
+    setJobContent(jobDescription);
+
+    console.log(jobDescription);
+    console.log(`${DOMAIN}:${PORT}`);
+    console.log(toggle);
+
+    axios
+      .post(`${DOMAIN}:${PORT}/api`, {
+        jobDescription,
+        pdfContent,
+        toggle,
+      })
+      .then((res) => {
+        setResponseData(res.data.finalResponse);
+        setJobKeywords(res.data.jobKeywords);
+        setReformatedCV(res.data.reformatedCV);
+        setLoading(false);
+        console.log(responseData);
+        console.log(reformatedCV);
+        console.log(jobKeywords);
+      });
+  };
+
+  const handleRefineInfo = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const possitiveKeywords = e.target["possitiveKeywords"].value;
+    const negativeKeywords = e.target["negativeKeywords"].value;
+
+    console.log(possitiveKeywords);
+    console.log(negativeKeywords);
+    axios
+      .post(`${DOMAIN}:${PORT}/api/refine`, {
+        possitiveKeywords,
+        negativeKeywords,
+        reformatedCV,
+        jobKeywords,
+        responseData,
+      })
+      .then((res) => {
+        setResponseData(res.data.refinedCV);
+        setLoading(false);
+      });
+  };
+
+  const handleDeleteDoc = () => {
+    setPdfContent("");
+  };
+
+  const handleToggleChange = (checked) => {
+    setToggle(checked);
+  };
+
+  const handleRefine = () => {
+    setRefine(true);
+  };
 
   return (
     <>
-      <h1> CV HACK</h1>
+      <Navbar />
 
-      {loading ? (
-        <div>Loading...</div>
-      ) : (
-        <>
-          <form className="form__current" onSubmit={handleSubmit}>
-            <h2> Add your job information</h2>
+      <div className="mainpage__wrapper">
+        {loading ? (
+          <Loading />
+        ) : responseData ? (
+          <>
+            <h2 className="response__title">
+              {" "}
+              Hacking complete! Here is the Final Result
+            </h2>
 
-            <h3> Current Job</h3>
-            <label className="inputcom__label">Add your current role </label>
-            <input
-              name="currentRole"
-              className="inputcom__input"
-              type="text"
-              placeholder="Add your current job role"
+            <div
+              className="response__section"
+              dangerouslySetInnerHTML={{ __html: responseData }}
             />
+            <div className="button__group">
+              <button
+                className="button__startover"
+                onClick={() => setResponseData(null)}
+              >
+                <img className="redoicon" src={redoicon} /> Start over again
+              </button>
+              <button className="button__refine" onClick={handleRefine}>
+                <img className="refineicon" src={refineicon} /> Refine current
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <section className="input">
+              <section className="input__top">
+                <div className="input__upload">
+                  <form>
+                    <h2> Step 1: Upload you CV</h2>
+                    <div className=" input__top--tips">
+                      <div className="input__tipgroup">
+                        <img className="tipsicon" src={tipsicon} />
+                        <p>Tips</p>
+                      </div>
+                      <p>- Try removing the Bio from the CV.</p>
+                      <p>
+                        {" "}
+                        - We would recommend to include a CV which has strictly
+                        only job Experiences, Educational Background and a
+                        separate section for your skills
+                      </p>
+                    </div>
+                    <div className="input__filemanage">
+                      <input
+                        className="input__top--file"
+                        onChange={handleFileChange}
+                        name="file"
+                        type="file"
+                      />
+                      <button
+                        className="input__deletefile"
+                        onClick={handleDeleteDoc}
+                      >
+                        {" "}
+                        <img className="deleteicon" src={deleteicon} />
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </section>
 
-            <label className="inputcom__label">
-              Add your current role description{" "}
-            </label>
-            <textarea
-              name="currentRoleDescription"
-              className="inputcom__area"
-              type="text"
-              placeholder="Add your current job description"
-            />
+              <section className="input__bottom">
+                <form
+                  className="input__bottom--jobdescription"
+                  onSubmit={handleInputInfo}
+                >
+                  <h2> Step 2: Add your job information</h2>
 
-            <h3> Previous job </h3>
-            <label className="inputcom__label">Add your previous role </label>
-            <input
-              name="previousRole"
-              className="inputcom__input"
-              type="text"
-              placeholder="Add your previous job role"
-            />
+                  <div className="input__bottom--wrapper">
+                    <div className="input__bottom--tips">
+                      <ul>
+                        <li>
+                          <div className="input__tipgroup">
+                            <img className="tipsicon" src={tipsicon} />
+                            <p>Tips</p>
+                          </div>
+                        </li>
+                        <li>
+                          - Copy and paste a job description you find online (eg
+                          Linkedin)
+                        </li>
+                        <li>
+                          - Use a description which directly indicates the
+                          minimum requirements, soft/hard skills and preffered
+                          qualifications{" "}
+                        </li>
+                        <li>
+                          {" "}
+                          - Avoid using unnecesary details about company
+                          history, culture, background etc. Strictly information
+                          related to the job you're applying
+                        </li>
+                      </ul>
+                    </div>
 
-            <label className="inputcom__label">
-              Add your previous role description{" "}
-            </label>
-            <textarea
-              name="previousRoleDescription"
-              className="inputcom__area"
-              type="text"
-              placeholder="Add your current job description"
-            />
+                    <div className="input__bottom--job">
+                      <label className="input__bottom--label">
+                        Add your interested role requirements, for example role
+                        responsibilities, minimum qualifications, skills etc{" "}
+                      </label>
+                      <textarea
+                        name="RoleRequirements"
+                        className="input__bottom--area"
+                        type="text"
+                        placeholder="Add your interested role description"
+                      />
+                    </div>
+                  </div>
 
-            <h3> Education</h3>
-            <label className="inputcom__label">
-              Add your eductation degree name{" "}
-            </label>
-            <input
-              name="education"
-              className="inputcom__input"
-              type="text"
-              placeholder="Add your degree"
-            />
+                  <div className="input__wildmode">
+                    <h4> Wild mode</h4>
+                    <ReactSwitch
+                      checked={toggle}
+                      onChange={(checked, event, id) => {
+                        handleToggleChange(checked);
+                      }}
+                    />
+                  </div>
+                  <button className="input__submit" type="submit">
+                    {" "}
+                    Submit{" "}
+                  </button>
+                </form>
+              </section>
+            </section>
+          </>
+        )}
 
-            <h3> Skills and Certifications</h3>
-            <label className="inputcom__label">Add your skills </label>
-            <textarea
-              name="skills"
-              className="inputcom__area"
-              type="text"
-              placeholder="Add your skills"
-            />
+        {showRefine && (
+          <form className="refine__section" onSubmit={handleRefineInfo}>
+            <div className="refine__group">
+              <label> Add specific keywords to improve</label>
+              <textarea
+                name="possitiveKeywords"
+                className="inputcom__refine-area"
+                type="text"
+                placeholder="Possitive keywords"
+              ></textarea>
+            </div>
 
-            <label className="inputcom__label">Add your certifications </label>
-            <textarea
-              name="certifications"
-              className="inputcom__area"
-              type="text"
-              placeholder="Add your certifications"
-            />
-
-            <h3> Bio</h3>
-            <label className="inputcom__label">Add your bio </label>
-            <textarea
-              name="bio"
-              className="inputcom__area"
-              type="text"
-              placeholder="Add your bio"
-            />
-
-            <h2> Add your interested job information</h2>
-            <label className="inputcom__label">Add your interested role </label>
-            <input
-              name="interestedRole"
-              className="inputcom__input"
-              type="text"
-              placeholder="Add your interested job role"
-            />
-
-            <label className="inputcom__label">
-              Add your interested role requirements{" "}
-            </label>
-            <textarea
-              name="interestedRoleRequirements"
-              className="inputcom__area"
-              type="text"
-              placeholder="Add your interested role description"
-            />
-
-            <button type="submit"> Submit </button>
+            <div className="refine__group">
+              <label> Add specific keywords to remove</label>
+              <textarea
+                name="negativeKeywords"
+                className="inputcom__refine-area"
+                type="text"
+                placeholder="Negative Keywords"
+              ></textarea>
+            </div>
+            <button className="button__startrefine" type="submit">
+              <img className="refineicon" src={refineicon} /> Start Refining{" "}
+            </button>
           </form>
-          <h2> Result</h2>
-          <div dangerouslySetInnerHTML={{__html:result}}/>
-          
-        </>
-      )}
+        )}
+      </div>
+      <Footer />
     </>
   );
 }
