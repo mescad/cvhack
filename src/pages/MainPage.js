@@ -15,14 +15,17 @@ const PORT = process.env.REACT_APP_PORT || 8080;
 const DOMAIN = process.env.REACT_APP_API_DOMAIN || "http://localhost";
 
 function MainPage() {
+  // eslint-disable-next-line
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [toggle, setToggle] = useState(false);
 
   //file uploading from field and parsing
 
-  const [pdfContent, setPdfContent] = useState("");
+  
+  // eslint-disable-next-line
   const [jobContent, setJobContent] = useState("");
+  const [pdfContent, setPdfContent] = useState("");
   const [responseData, setResponseData] = useState(null);
   const [reformatedCV, setReformatedCV] = useState(null);
   const [jobKeywords, setJobKeywords] = useState(null);
@@ -30,6 +33,7 @@ function MainPage() {
 
   console.log(toggle);
 
+  //pdf file parsing
   const handleFileChange = async (event) => {
     event.preventDefault();
 
@@ -65,6 +69,7 @@ function MainPage() {
     }
   };
 
+  //job requirement addition
   const handleInputInfo = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -94,6 +99,7 @@ function MainPage() {
       });
   };
 
+  //keyword detection and reintegration
   const handleRefineInfo = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -117,10 +123,12 @@ function MainPage() {
       });
   };
 
+//pdf delete function
   const handleDeleteDoc = () => {
     setPdfContent("");
   };
 
+  //wild mode toggle
   const handleToggleChange = (checked) => {
     setToggle(checked);
   };
@@ -152,10 +160,10 @@ function MainPage() {
                 className="button__startover"
                 onClick={() => setResponseData(null)}
               >
-                <img className="redoicon" src={redoicon} /> Start over again
+                <img alt="redo_icon" className="redoicon" src={redoicon} /> Start over again
               </button>
               <button className="button__refine" onClick={handleRefine}>
-                <img className="refineicon" src={refineicon} /> Refine current
+                <img alt="refine_icon" className="refineicon" src={refineicon} /> Refine current
               </button>
             </div>
           </>
@@ -168,7 +176,7 @@ function MainPage() {
                     <h2 className="input__header"> Step 1: Upload you CV</h2>
                     <div className=" input__top--tips">
                       <div className="input__tipgroup">
-                        <img className="tipsicon" src={tipsicon} />
+                        <img alt="tips_icon" className="tipsicon" src={tipsicon} />
                         <p>Tips</p>
                       </div>
                       <p>- Try removing the Bio from the CV.</p>
@@ -194,7 +202,7 @@ function MainPage() {
                         onClick={handleDeleteDoc}
                       >
                         {" "}
-                        <img className="deleteicon" src={deleteicon} />
+                        <img alt="delete_icon" className="deleteicon" src={deleteicon} />
                       </button>
                     </div>
                   </form>
@@ -213,7 +221,7 @@ function MainPage() {
                       <ul>
                         <li>
                           <div className="input__tipgroup">
-                            <img className="tipsicon" src={tipsicon} />
+                            <img alt="tips_icon" className="tipsicon" src={tipsicon} />
                             <p>Tips</p>
                           </div>
                         </li>
@@ -253,7 +261,7 @@ function MainPage() {
                     <h4> Wild mode</h4>
                     <ReactSwitch
                       checked={toggle}
-                      onChange={(checked, event, id) => {
+                      onChange={(checked, event, id) => { 
                         handleToggleChange(checked);
                       }}
                     />
@@ -290,7 +298,7 @@ function MainPage() {
               ></textarea>
             </div>
             <button className="button__startrefine" type="submit">
-              <img className="refineicon" src={refineicon} /> Start Refining{" "}
+              <img alt="refine_icon" className="refineicon" src={refineicon} /> Start Refining{" "}
             </button>
           </form>
         )}

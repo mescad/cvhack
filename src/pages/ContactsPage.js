@@ -21,20 +21,20 @@ function Contacts() {
 
 <div className="details__group">  
         <h3>Email the creator here:</h3>
-        <a href="mailto:dumitrumesca@gmail.com">  <img className="emaillogo" src={emaillogo}/></a>
+        <a href="mailto:dumitrumesca@gmail.com">  <img alt ="email_icon" className="emaillogo" src={emaillogo}/></a>
         </div>
         <div className="details__group">  
         <h3> Make sure to follow the creator on Github</h3>
         <h3>
           {" "}
-          <a href="https://github.com/mescad"> <img className="githublogo" src={githublogo}/></a>
+          <a href="https://github.com/mescad"> <img alt ="github_icon" className="githublogo" src={githublogo}/></a>
         </h3>
         </div>
         <div className="details__group">  
         <h3>Find me on LinkedIn</h3>
         <h3>
           {" "}
-          <a href="https://www.linkedin.com/in/dumitru-mesca96/">  <img className="linkedinlogo"  src={linkedinlogo}/></a>
+          <a href="https://www.linkedin.com/in/dumitru-mesca96/">  <img alt ="linkedin_icon"  className="linkedinlogo"  src={linkedinlogo}/></a>
         </h3>
         </div>
         </div>
