@@ -165,7 +165,7 @@ function MainPage() {
               <section className="input__top">
                 <div className="input__upload">
                   <form>
-                    <h2> Step 1: Upload you CV</h2>
+                    <h2 className="input__header"> Step 1: Upload you CV</h2>
                     <div className=" input__top--tips">
                       <div className="input__tipgroup">
                         <img className="tipsicon" src={tipsicon} />
@@ -174,10 +174,13 @@ function MainPage() {
                       <p>- Try removing the Bio from the CV.</p>
                       <p>
                         {" "}
-                        - We would recommend to include a CV which has strictly
+                        - Include a CV which has strictly
                         only job Experiences, Educational Background and a
                         separate section for your skills
                       </p>
+                      <p>- Avoid using CV's with a complex structure/format</p>
+                      <p>- Please use a one page CV for best results.</p>
+                      
                     </div>
                     <div className="input__filemanage">
                       <input
@@ -203,7 +206,7 @@ function MainPage() {
                   className="input__bottom--jobdescription"
                   onSubmit={handleInputInfo}
                 >
-                  <h2> Step 2: Add your job information</h2>
+                  <h2 className="input__header"> Step 2: Add your job information</h2>
 
                   <div className="input__bottom--wrapper">
                     <div className="input__bottom--tips">
@@ -234,14 +237,14 @@ function MainPage() {
 
                     <div className="input__bottom--job">
                       <label className="input__bottom--label">
-                        Add your interested role requirements, for example role
-                        responsibilities, minimum qualifications, skills etc{" "}
+                        Add your interested role requirements, including
+                        responsibilities, minimum qualifications, skills etc (max 300 words){" "}
                       </label>
                       <textarea
                         name="RoleRequirements"
                         className="input__bottom--area"
                         type="text"
-                        placeholder="Add your interested role description"
+                        placeholder="Add your interested role or a brief description"
                       />
                     </div>
                   </div>
