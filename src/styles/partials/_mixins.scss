@@ -1,0 +1,86 @@
+@use "./variables" as *;
+
+@mixin tablet {
+	@media screen and (min-width: $tablet-breakpoint) {
+		@content;
+	}
+}
+
+@mixin desktop {
+	@media screen and (min-width: $desktop-breakpoint) {
+		@content;
+	}
+}
+
+@mixin bodySmall {
+	font-size: 1.1rem;
+	line-height: 1.6rem;
+	margin: 0;
+
+	@include tablet {
+		font-size: 1.2rem;
+		line-height: 1.8rem;
+	}
+}
+
+@mixin bodyLarge {
+	font-size: 1.5rem;
+	line-height: 2.6rem;
+	margin: 0;
+
+	@include tablet {
+		font-size: 1.6rem;
+		line-height: 2.8rem;
+	}
+}
+
+@mixin centerSectionWrapper {
+	max-width: $desktop-breakpoint;
+	margin: auto;
+}
+
+@mixin topDivider {
+    border-top: 1px solid #BDC5D5;
+}
+
+@mixin bottomDivider {
+    border-bottom: 1px solid #BDC5D5;
+}
+
+@mixin primaryBtn {
+	height: 3.6rem;
+	background-color: $primary-alternative;
+	padding: 0rem 1.6rem;
+	width: 100%;
+	border-radius: 2rem;
+	color: $primary-light;
+
+	@include tablet{
+		height: 3.8rem;
+		width: auto;
+	}
+
+	&:hover{
+		background-color: $primary-main;
+	}
+}
+
+@mixin secondaryBtn {
+	height: 3.6rem;
+	background-color: $primary-light;
+	padding: 0rem 1.6rem;
+	width: 100%;
+	border-radius: 2rem;
+	color: $secondary-main;
+	border: 1px solid $secondary-alternative;
+
+	@include tablet{
+		height: 3.8rem;
+		width: auto;
+	}
+
+	&:hover{
+		color: $primary-alternative;
+		border: 1px solid $primary-alternative;
+	}
+}

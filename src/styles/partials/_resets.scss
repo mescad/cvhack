@@ -1,0 +1,98 @@
+@use "./variables" as *;
+@use "./mixins" as *;
+
+html {
+	font-size: 62.5%;
+}
+body {
+	font-size: 1.6rem;
+	margin: 0;
+	& a {
+		text-decoration: none;
+	}
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+// Page Header
+h1 {
+	font-size: 2.8rem;
+	line-height: 3.6rem;
+	margin: 0;
+
+	@include tablet {
+		font-size: 3.2rem;
+		line-height: 4rem;
+	}
+}
+
+// Sub header
+h2 {
+	font-size: 2rem;
+	line-height: 2.8rem;
+	margin: 0;
+
+	@include tablet {
+		font-size: 2.4rem;
+		line-height: 3.2rem;
+	}
+}
+
+// Label, link, button
+h3 {
+	font-size: 1.3rem;
+	line-height: 2rem;
+	margin: 0;
+
+	@include tablet {
+		font-size: 1.4rem;
+		line-height: 2.2rem;
+	}
+}
+
+// Table header
+h4 {
+	font-size: 1.1rem;
+	line-height: 1.6rem;
+	margin: 0;
+	color: $secondary-main;
+
+	@include tablet {
+		font-size: 1.2rem;
+		line-height: 1.8rem;
+	}
+}
+
+// P2 body medium, for body large and body small please use mixin
+p {
+	font-size: 1.3rem;
+	line-height: 2rem;
+	margin: 0;
+	color: $primary-main;
+
+	@include tablet {
+		font-size: 1.4rem;
+		line-height: 2.2rem;
+	}
+}
+
+ul {
+	list-style: none;
+	margin: 0;
+	padding-left: 0;
+}
+
+a,
+a:visited {
+	text-decoration: none;
+	color: inherit;
+}
+
+button {
+	background: none;
+	border: none;
+}

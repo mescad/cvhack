@@ -1,70 +1,142 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Project Title
 
-## Available Scripts
+The CVHACK project helps people adjust their CV's according to the job description for the desired job.The app is intended to customize and refine a candidate's CV based on the job description that the candidate is applying for as well as making the cv format readable for the ATS system.
 
-In the project directory, you can run:
+## Installation
 
-### `npm start`
+Install CVHACK with npm
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```bash
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+  cd into cvhack folder
+  run npm install in the terminal
+  create a new file called .env in cvhack/src folder and copy+paste the values from the .env_template
+  run npm start
+  
+```
+    
+## Run Locally
 
-### `npm test`
+Clone the project
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+  git clone git@github.com:mescad/cvhack.git
+```
 
-### `npm run build`
+Go to the project directory
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+  cd cvhack
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Install dependencies
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+  npm install
+```
 
-### `npm run eject`
+Start the server
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+  npm start
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## API Reference
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+#### Check for API response
 
-## Learn More
+```http
+  GET /api/
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
+#### Send request and get response from chat gpt
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```http
+  POST /api/
+```
 
-### Analyzing the Bundle Size
+Receives the user input as REQ.
+Sends back the CHAT GPT response based on the pre-written prompt
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+User input:
+- cvData - raw parsed pdf data of the candidate cv
+- jobData - description of the job 
+- wildMode (boolean for wild mode toggle)
 
-### Making a Progressive Web App
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Prompt: - stored on the back end (pre-written)
 
-### Advanced Configuration
+Output:
+API CALL 1:
+- reformatedCv - Structured CV from cvData input + prompt1
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+API CALL 2:
+- jobKeywords - keywords extracted from jobData input + prompt2
 
-### Deployment
+API CALL 3:
+-finalResponse - final output which takes jobKeywords + reformatedCV + prompt3 as input.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+#### Send refine request and get response from chat gpt
 
-### `npm run build` fails to minify
+```http
+  POST /api/refine
+```
+API ALL 4:
+Receives the user input, previous assistance answer as well as the revised prompt including the possitive and negative keywords.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Takes the following as input:
+reformated CV, jobKeywords,finalResponse, prompt3 + refinementPrompt
+
+Sends back the CHAT GPT respone as refinedCV
+
+
+
+
+
+## Screenshots
+
+Set up input 1
+![App Screenshot](https://github.com/mescad/cvhack/blob/main/Screenshot%202023-09-04%20at%2021.27.00.png)
+
+Set up input 2
+![App Screenshot](https://github.com/mescad/cvhack/blob/main/Screenshot%202023-09-04%20at%2021.27.30.png)
+
+Loading
+![App Screenshot](https://github.com/mescad/cvhack/blob/main/Screenshot%202023-09-04%20at%2021.37.34.png)
+
+Final output
+![App Screenshot](https://github.com/mescad/cvhack/blob/main/Screenshot%202023-09-04%20at%2021.39.49.png)
+
+Refinement
+![App Screenshot](https://github.com/mescad/cvhack/blob/main/Screenshot%202023-09-04%20at%2021.40.48.png)
+
+
+## Optimizations
+
+What optimizations did you make in your code? E.g. refactors, performance improvements, accessibility
+
+
+The code does 3 API calls in total by defaul with one more call for optional refinement.
+
+1. API CALL-Structuring the parsed data from the pdf. 
+-Adding structure to the current parsed CV.
+
+-Optimisation done: Reduced the prompt size and moved to GPT3.5 turbo due to low complexity.
+
+2.API CALL- Keyword extraction
+- Extracting the main words out of the job application input
+
+-Optimisation done: Reduced the prompt size and moved to GPT3.5 turbo due to low complexity.
+
+3. API CALL- Data merge and CV refinement using the inputs
+
+- Optimisation done: Moved to GPT4 algorithm due to its better propmpt undestanding and better intelligence.
+
+## Authors
+
+- [@mescad](https://www.github.com/mescad)
+

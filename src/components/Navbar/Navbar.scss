@@ -1,0 +1,52 @@
+@use "../../styles/partials/mixins" as *;
+@use "../../styles/partials/variables" as *;
+
+.navbar{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.6rem 3.6rem;
+    justify-content: space-between;
+
+    &__group--left{
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        gap: 0.5rem;
+    }
+
+    &__group--right{
+        display: flex;
+        gap: 2rem;
+    }
+
+
+    &__home{
+        &:hover{
+            background-color: black;
+            color: white;
+            border-radius: 0.5rem;
+        }
+    }
+
+    &__contacts{
+        &:hover{
+            background-color: black;
+            color: white;
+            border-radius: 0.5rem;}
+    }
+
+    &__about{
+        &:hover{
+            background-color: black;
+            color: white;
+            border-radius: 0.5rem;        }
+    }
+
+}
+
+.openai__logo-navbar{
+    width: 1.5rem;
+    height: 1.5rem;
+}
