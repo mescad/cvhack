@@ -5,13 +5,16 @@
 max-width: 102rem;
 display: flex;
 flex-direction: column;
-margin: auto;
+justify-content: center;
 padding: 1.6rem 1.6rem;
 border: 0.1rem solid black;
 border-radius: 0.5rem;
 margin-top: 5rem;
 
 background-color: gainsboro;
+margin-right: 3.6rem;
+margin-left: 3.6rem;
+
 
 
 
@@ -21,11 +24,15 @@ background-color: gainsboro;
     display: flex;
     flex-direction: column;
     gap: 3rem;
+    justify-content: center;
 }
 
 .details__group{
     display: flex;
     flex-direction: column;
+    margin: auto;
+    justify-content: center;
+    text-align: center;
 
     padding: 1rem 0rem;
 }

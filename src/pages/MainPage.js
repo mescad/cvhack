@@ -22,7 +22,6 @@ function MainPage() {
 
   //file uploading from field and parsing
 
-  
   // eslint-disable-next-line
   const [jobContent, setJobContent] = useState("");
   const [pdfContent, setPdfContent] = useState("");
@@ -123,7 +122,7 @@ function MainPage() {
       });
   };
 
-//pdf delete function
+  //pdf delete function
   const handleDeleteDoc = () => {
     setPdfContent("");
   };
@@ -160,10 +159,16 @@ function MainPage() {
                 className="button__startover"
                 onClick={() => setResponseData(null)}
               >
-                <img alt="redo_icon" className="redoicon" src={redoicon} /> Start over again
+                <img alt="redo_icon" className="redoicon" src={redoicon} />{" "}
+                Start over again
               </button>
               <button className="button__refine" onClick={handleRefine}>
-                <img alt="refine_icon" className="refineicon" src={refineicon} /> Refine current
+                <img
+                  alt="refine_icon"
+                  className="refineicon"
+                  src={refineicon}
+                />{" "}
+                Refine current
               </button>
             </div>
           </>
@@ -176,19 +181,22 @@ function MainPage() {
                     <h2 className="input__header"> Step 1: Upload you CV</h2>
                     <div className=" input__top--tips">
                       <div className="input__tipgroup">
-                        <img alt="tips_icon" className="tipsicon" src={tipsicon} />
+                        <img
+                          alt="tips_icon"
+                          className="tipsicon"
+                          src={tipsicon}
+                        />
                         <p>Tips</p>
                       </div>
                       <p>- Try removing the Bio from the CV.</p>
                       <p>
                         {" "}
-                        - Include a CV which has strictly
-                        only job Experiences, Educational Background and a
-                        separate section for your skills
+                        - Include a CV which has strictly only job Experiences,
+                        Educational Background and a separate section for your
+                        skills
                       </p>
                       <p>- Avoid using CV's with a complex structure/format</p>
                       <p>- Please use a one page CV for best results.</p>
-                      
                     </div>
                     <div className="input__filemanage">
                       <input
@@ -202,7 +210,11 @@ function MainPage() {
                         onClick={handleDeleteDoc}
                       >
                         {" "}
-                        <img alt="delete_icon" className="deleteicon" src={deleteicon} />
+                        <img
+                          alt="delete_icon"
+                          className="deleteicon"
+                          src={deleteicon}
+                        />
                       </button>
                     </div>
                   </form>
@@ -214,14 +226,21 @@ function MainPage() {
                   className="input__bottom--jobdescription"
                   onSubmit={handleInputInfo}
                 >
-                  <h2 className="input__header"> Step 2: Add your job information</h2>
+                  <h2 className="input__header">
+                    {" "}
+                    Step 2: Add your job information
+                  </h2>
 
                   <div className="input__bottom--wrapper">
                     <div className="input__bottom--tips">
                       <ul>
                         <li>
                           <div className="input__tipgroup">
-                            <img alt="tips_icon" className="tipsicon" src={tipsicon} />
+                            <img
+                              alt="tips_icon"
+                              className="tipsicon"
+                              src={tipsicon}
+                            />
                             <p>Tips</p>
                           </div>
                         </li>
@@ -246,7 +265,8 @@ function MainPage() {
                     <div className="input__bottom--job">
                       <label className="input__bottom--label">
                         Add your interested role requirements, including
-                        responsibilities, minimum qualifications, skills etc (max 300 words){" "}
+                        responsibilities, minimum qualifications, skills etc
+                        (max 300 words){" "}
                       </label>
                       <textarea
                         name="RoleRequirements"
@@ -261,7 +281,7 @@ function MainPage() {
                     <h4> Wild mode</h4>
                     <ReactSwitch
                       checked={toggle}
-                      onChange={(checked, event, id) => { 
+                      onChange={(checked, event, id) => {
                         handleToggleChange(checked);
                       }}
                     />
@@ -298,7 +318,8 @@ function MainPage() {
               ></textarea>
             </div>
             <button className="button__startrefine" type="submit">
-              <img alt="refine_icon" className="refineicon" src={refineicon} /> Start Refining{" "}
+              <img alt="refine_icon" className="refineicon" src={refineicon} />{" "}
+              Start Refining{" "}
             </button>
           </form>
         )}
