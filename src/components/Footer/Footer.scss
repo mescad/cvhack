@@ -1,0 +1,21 @@
+@use "../../styles/partials/mixins" as *;
+@use "../../styles/partials/variables" as *;
+
+.footer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3rem;
+    gap: 1.6rem;
+    padding: 1.6rem 1.6rem;
+    
+}
+
+.openai__logo{
+    width: 1.5rem;
+    height: 1.5rem;
+}
+.openai{
+    display: flex;
+}
