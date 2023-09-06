@@ -78,11 +78,11 @@ function MainPage() {
     setJobContent(jobDescription);
 
     console.log(jobDescription);
-    console.log(`${DOMAIN}:${PORT}`);
+    console.log(`${DOMAIN}`);
     console.log(toggle);
 
     axios
-      .post(`${DOMAIN}:${PORT}/api`, {
+      .post(`${DOMAIN}/api`, {
         jobDescription,
         pdfContent,
         toggle,
@@ -109,7 +109,7 @@ function MainPage() {
     console.log(possitiveKeywords);
     console.log(negativeKeywords);
     axios
-      .post(`${DOMAIN}:${PORT}/api/refine`, {
+      .post(`${DOMAIN}/api/refine`, {
         possitiveKeywords,
         negativeKeywords,
         reformatedCV,
